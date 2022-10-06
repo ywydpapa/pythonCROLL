@@ -9,8 +9,8 @@ cur = None
 db = pymysql.connect(host='192.168.200.2', user='swcore', password='core2020', db='jodal', charset='utf8')
 fromdate = datetime.today()
 todate = datetime.today() - timedelta(1)
-datafrom = "20220501" #시작일
-datato = "20221006" #종료일
+datafrom = "20220901" #시작일
+datato = "" #종료일
 if datafrom is None:
     datafrom = fromdate.strftime("%Y%m%d")
 if datato is None:
@@ -18,9 +18,10 @@ if datato is None:
 vatno = "6058177638"
 
 prd = ["43222612","43233499","43222501","43233205","43232902"] #네트워크스위치,유틸리티소프트웨어,방화벽장치,트랜잭션보안소프트웨어,통신서버
+
 for pdl in prd:
     encpr = parse.quote(pdl)
-    url ="https://apis.data.go.kr/1230000/ShoppingMallPrdctInfoService05/getSpcifyPrdlstPrcureInfoList?serviceKey=pLPvMUbq1ZSf6B3nwMFV0mvd6rOMYxX%2BwmcX7rwwvjlsXnH5v5OvgEu0ikW8Nux5L2RVG%2Bz51wb5KyDsQTvQ2Q%3D%3D&numOfRows=999&pageNo=1&type=json&inqryDiv=1&inqryBgnDate="+datafrom+"&inqryEndDate="+datato+"&inqryPrdctDiv=1&prdctClsfcNo="+encpr+"&bizno="+vatno
+    url ="https://apis.data.go.kr/1230000/ShoppingMallPrdctInfoService05/getSpcifyPrdlstPrcureInfoList?serviceKey=pLPvMUbq1ZSf6B3nwMFV0mvd6rOMYxX%2BwmcX7rwwvjlsXnH5v5OvgEu0ikW8Nux5L2RVG%2Bz51wb5KyDsQTvQ2Q%3D%3D&numOfRows=999&pageNo=1&type=json&inqryDiv=1&inqryBgnDate="+datafrom+"&inqryEndDate="+datato+"&inqryPrdctDiv=1&prdctClsfcNo="+encpr
     resource = requests.get(url, verify=False).json()
     pdata = resource.get('response')
     gdata = pdata.get('body')
@@ -33,7 +34,7 @@ for pdl in prd:
         val03 = df.iloc[i]["dminsttNm"] #수요기관명
         val04 = df.iloc[i]["dmndInsttDivNm"] #수요기관종류
         val05 = df.iloc[i]["dminsttRgnNm"] #수요지역
-        val06 = df.iloc[i]["cntrctDlvrReqNo"] #계약번호\
+        val06 = df.iloc[i]["cntrctDlvrReqNo"] #계약번호
         val07 = df.iloc[i]["prdctClsfcNo"] #계약물품번호
         val08 = df.iloc[i]["prdctClsfcNoNm"] # 계약품목
         val09 = df.iloc[i]["prdctUprc"] #단가
@@ -54,7 +55,7 @@ for pdl in prd:
             cur.execute(sql1)
             rtn = cur.fetchone()
             if rtn[0] < 1:
-                sql = f"INSERT INTO swc_pps (compNo,buyerCode,buyerName,buyerArea,buyerAreacode,reqNo,reqItemcode,reqItem,itemNetprice,itemQty,itemUnit,itemAmount,contractTitle,modQty,modAmount,contractDate,deliveryDate,deliveryPlace,regDate) values ('{val01}','{val02}','{val03}','{val04}','{val05}','{val06}','{val07}','{val08}','{val09}','{val10}','{val11}','{val12}','{val13}','{val14}','{val15}','{val16}','{val17}','{val18}',now())"
+                sql = f"INSERT INTO swc_pps (compNo,buyerCode,buyerName,buyerArea,buyerAreacode,reqNo,reqItemcode,reqItem,itemNetprice,itemQty,itemUnit,itemAmount,contractTitle,modQty,modAmount,contractDate,deliveryDate,deliveryPlace,regDate) values ('{val01}','{val02}','{val03}','{val05}','{val04}','{val06}','{val07}','{val08}','{val09}','{val10}','{val11}','{val12}','{val13}','{val14}','{val15}','{val16}','{val17}','{val18}',now())"
                 cur.execute(sql)
                 db.commit()
             else:
