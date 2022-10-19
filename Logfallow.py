@@ -45,7 +45,7 @@ if __name__ == '__main__':
             else:
                 cur = db.cursor()
                 sql = f"INSERT INTO logger.inoutT " +"("+ txtv +")"+ f" VALUES "+"("+ sqlv +")"
-                print(sql)
+                # print(sql)
                 cur.execute(sql)
                 db.commit()
         else:
